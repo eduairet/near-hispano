@@ -2,4 +2,4 @@
 
 Contenido:
 
--   [NEAR NCA](./nca/README.md)
+-   [NEAR NCA](./nca)
