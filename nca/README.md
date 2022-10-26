@@ -11,6 +11,9 @@
 -   **Contrato inteligente:** Protocolo de transacción computarizado, barato y autoejecutable, que se encarga de que se cumplan las condiciones del mismo.
     -   No se presta a interpretaciones, solo se ejecuta
     -   Puede traer información del mundo real por medio de oráculos aunque mientras más subjetiva sea esta más compleja será la implementación
+-   **Ciclo de vida de la transación:**
+    -   **RPC** es la puerta de entrada a la _blockchain,_ para que se procesen las transacciones
+    -   La transacción entra y se corre en la máquina virtual esperando a ser validada
 
 ## Intro:
 
@@ -47,11 +50,62 @@
     -   Herramientas: `NEAR CLI` `NEAR Explorer` `NEAR RPC` `NEAR API JS`
     -   Indexers y oraculos: `NEAR Indexer Framework` `NEAR Lake Framework` `The Graph` `Chainlink` `Flux Protocol`
 
+## Sesión 2
+
+-   **Web 3.0:** No es el futuro, pero es una tecnología muy importante, es una bifurcación del internet (un branch del protocolo)
+
+    -   Una ideología de la privacidad y la descentralización
+
+-   **Identidad:**
+    -   En Web 2.0 usamos nuestra identidad e información como moneda de cambio
+        -   Propicia el mal uso de la información
+    -   En la Web 3.0 la identidad está más protegida
+        -   La identidad se protege ya que no debes dar tus datos personales
+
+### Los 3 grandes de la descentralización en NEAR
+
+-   **NFTs y FTs:** Son los tokens de las redes, los fungibles (tokens nativos y de utilidad) que se pueden dividir e intercambiar y los no fungibles que no se pueden dividir (representan objetos del mundo real o digital, se representan en un _smart contract_ no se pueden repetir).
+    -   Mercados de NFTs en ejemplo: `Mintbase` `Paras` `Nativo NFT`
+-   **DeFi:** Finanzas descentralizadas que se ejecutan en _smart contracts_ dentro de una _blockchain_
+    -   Ejemplos de DeFi: `Ref finance` `Meta pool` `Aurora`
+-   **DAOs:** Organizaciones Autónomas Descentralizadas que utilizan _blockchain_ y _smart contracts_ para la organización y distribución de riqueza de manera transparente, inmutable, autónoma y segura.
+    -   Astro DAO y Sputnik DAO son las principales DAOs de NEAR
+
+## Sesión 3
+
+-   Redes de NEAR
+    -   Mainnet: Producción
+    -   Testnet: Pruebas previas a despliegue
+    -   Betanet: Red pública para pruebas del nearcore, se reinicia constantemente
+    -   Localnet: Dirigido a desarrolladores, tú generas los nodos (como EVM London de Solidity)
+-   Las redes se exploran en los exploradores de bloques de cada red
+-   Yocto es la unidad mínima de medida de un near (como un satoshi o un wei)
+
+### Herramientas de desarrollo
+
+-   La más importante es la [NEAR CLI](https://docs.near.org/tools/near-cli)
+-   Se puede usar el SDK de [JavaScript](https://docs.near.org/tools/near-sdk-js) o [Rust](https://docs.near.org/sdk/rust/introduction)
+
+### Aurora
+
+-   Un smart contract que permite trabajar con la EVM
+-   Es un ecosistema que permite usar el ecosistema de Ethereum usando las ventajas de NEAR
+-   Aurora+ es el programa para usar Aurora con 50 transacciones gratuitas al mes
+
+### Rainbow Bridge
+
+-   Permite tener interoperabilidad entre diversas _blockchains,_ permitiendo iniciar sesión desde cualquier _blockchain_
+-   Para usar Aurora se necesita Solidity, en NEAR el más utilizado es Rust
+
+---
+
 ### Proyecto Final: ¿Cómo implementarían la tecnología de NEAR en un proyecto?
 
 -   Ideas:
     -   Plataforma que mintea un NFT de cierto color de acuerdo al monto (oráculo)
+    -   Un contrato que cambie la metadata de la fuente
 -   Hacer una presentación
+    -   Presentar como aplicaríamos el protocolo NEAR a nuestro proyecto en 5 slides
 
 ## Documentación
 
