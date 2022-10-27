@@ -97,6 +97,56 @@
 -   Permite tener interoperabilidad entre diversas _blockchains,_ permitiendo iniciar sesión desde cualquier _blockchain_
 -   Para usar Aurora se necesita Solidity, en NEAR el más utilizado es Rust
 
+## Sesión 4
+
+### Proyectos en NEAR
+
+-   Una de las más completas páginas de consulta de las DApps de NEAR es [awesomenear](https://awesomenear.com)
+-   El _marketing_ en Web3 es más difícil porque es privado
+-   El código de las DApps es libre
+    -   Las auditorías son muy caras pero necesarias para validar tu proyecto
+    -   Muchos proyectos que han sido atacados se convierten en la base de nuevos proyectos
+-   Contratos:
+
+    -   El contrato se encuentra en `lib.rs` por convención
+    -   En la web3 se deben hacer siempre tests
+    -   Rust no es un lenguaje orientado a objetos
+    -   Ejemplos:
+
+        ```Rust
+        #[payable] // Public - People can attach money
+        pub fn donate(&mut self) -> U128 {
+        // Get who is calling the method
+        // and how much $NEAR they attached
+        let donor: AccountId = env::predecessor_account_id();
+        let donation_amount: Balance = env::attached_deposit();
+
+        let mut donated_so_far = self.donations.get(&donor).unwrap_or(0);
+
+        let to_transfer: Balance = if donated_so_far == 0 {
+            // Registering the user's first donation increases storage
+            assert!(donation_amount > STORAGE_COST, "Attach at least {} yoctoNEAR", STORAGE_COST);
+
+            // Subtract the storage cost to the amount to transfer
+            donation_amount - STORAGE_COST
+        }else{
+            donation_amount
+        };
+
+        // Persist in storage the amount donated so far
+        donated_so_far += donation_amount;
+        self.donations.insert(&donor, &donated_so_far);
+
+        log!("Thank you {} for donating {}! You donated a total of {}", donor.clone(), donation_amount, donated_so_far);
+
+        // Send the money to the beneficiary
+        Promise::new(self.beneficiary.clone()).transfer(to_transfer);
+
+        // Return the total amount donated so far
+        U128(donated_so_far)
+        }
+        ```
+
 ---
 
 ### Proyecto Final: ¿Cómo implementarían la tecnología de NEAR en un proyecto?
@@ -105,7 +155,9 @@
     -   Plataforma que mintea un NFT de cierto color de acuerdo al monto (oráculo)
     -   Un contrato que cambie la metadata de la fuente
 -   Hacer una presentación
+
     -   Presentar como aplicaríamos el protocolo NEAR a nuestro proyecto en 5 slides
+    -   Demostrar que se ha entendido lo mostrado en el curso
 
 ## Documentación
 
