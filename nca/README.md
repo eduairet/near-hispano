@@ -2,8 +2,8 @@
 
 ## Certificación de analista NEAR
 
--   Ethereum es el ecosistema más grande para desarrollo de aplicaciones de Web3
--   NEAR ayuda a escalar el desarrollo de aplicaciones Web3
+> -   Ethereum es el ecosistema más grande para desarrollo de aplicaciones de Web3
+> -   NEAR ayuda a escalar el desarrollo de aplicaciones Web3
 
 ## Conceptos básicos:
 
@@ -11,11 +11,61 @@
 -   **Contrato inteligente:** Protocolo de transacción computarizado, barato y autoejecutable, que se encarga de que se cumplan las condiciones del mismo.
     -   No se presta a interpretaciones, solo se ejecuta
     -   Puede traer información del mundo real por medio de oráculos aunque mientras más subjetiva sea esta más compleja será la implementación
--   **Ciclo de vida de la transación:**
-    -   **RPC** es la puerta de entrada a la _blockchain,_ para que se procesen las transacciones
-    -   La transacción entra y se corre en la máquina virtual esperando a ser validada
+-   **Transacción:**
 
-## Intro:
+    -   Una transacción es la unidad mínima de trabajo (cómputo)
+    -   Es una colección de acciones que describe lo que tiene que hacerse en el receptor
+    -   Información contenida en una transacción:
+        -   Origen
+        -   Receptor
+        -   Timestamp
+        -   Hash único
+    -   Las acciones de una transacción son unidades componibles y son las siguientes:
+        -   `CreateAccount` hacer una nueva cuenta
+        -   `DeleteAccount` borrar una cuenta (transferir balance a una cuenta beneficiaria)
+        -   `AddKey` añadir una llave a una cuenta _(FullAccess / FunctionCall)_
+        -   `DeleteKey` borrar una llave existente de una cuenta
+        -   `Transfer` enviar _tokens_ de una cuenta a otra
+        -   `Stake` hacerse un validador (en la próxima oportunidad disponible)
+        -   `DeployContract` despliegue de contrato
+        -   `FunctionCall` llamado a un método en un contrato (incluye un presupuesto para cómputo y almacenamiento)
+    -   Recibos:
+        -   Mensaje pagado que se ejecuta en cierto destino
+        -   Es una solicitud externa para crear un recibo
+        -   Hay varias maneras de generarlos:
+            -   Emitir una transacción
+            -   Regresar una promesa (llamadas cruzadas entre contratos)
+            -   Emitir un reembolso
+    -   Atomicidad:
+        -   La ejecución de recibos es atómica -> Todo o nada se ejecuta
+        -   Una transacción de `functionCall` puede generar un número indefinido de recibos atómicos donde el éxito o fracaso de un recibo no afecta necesariamente el estado de otros recibos generados por la misma transacción
+    -   **Ciclo de vida de la transación:**
+
+        -   **RPC** es la puerta de entrada a la _blockchain,_ para que se procesen las transacciones
+        -   La transacción entra y se corre en la máquina virtual esperando a ser validada
+        -   **Gas:** Este es un monto que se añade a la transacción y sirve para pagar al validador por aprobar transaciones
+            -   El gas se cobra en la moneda nativa de la red, que es el NEAR
+            -   **Gas Units:** Unidad que determina el costo del gas y encapsula el cómputo, banda, tiempo y almacenamiento usado por el contrato
+            -   **Gas Price:** Las _gas units_ se multiplican por el precio para determinal el costo final
+                -   El precio se recalcula de acuerdo al tráfico de la red
+
+    -   **Estado**
+        -   Muestra el estado, los resultados y los recibos generados por la transacción
+        -   El campo de estado es un objeto con una llave simple y hay cuatro tipos de llave:
+            -   `SucceessValue`
+                -   El recibo ha sido ejecutado exitosamente
+                -   El valor de la llave es el valor del `return` (solo puede ser `nonempty` cuando es resultado de un recibo `functionCall`)
+            -   `SuccessReceiptld`
+                -   La transacción puede o ser exitosamente convertida a un recibo o un recibo es exitosamente procesado y ha generado otro recibo
+                -   El valor de esta llave es el id del nuevo recibo generado
+            -   `Failure`
+                -   La transacción o recibo ha fallado durante la ejecución
+            -   `Unknown`
+                -   La transacción o recibo ha no ha sido procesada aún.
+    -   **Finalidad:**
+        -   Consulta simple a la transacción que revisa que todos los hashes de las transacciones y recibos generados son finales
+
+## NEAR:
 
 -   Es una Layer1, _Proof of Stake_[^2] (prueba de participación), construida para ser simple y escalable para todos por medio de _sharding_[^1]
 -   El PoS puede ser corrompido si alguien tiene la mayoría de los datos de la red
@@ -23,8 +73,14 @@
 -   Con el sharding se pueden multiplicar las transacciones de la _blockchain_(aproximadamente 100,000 por segundo)
 -   Near permite manejar nuestra identidad mediante dapps, tokens, y alojar o ejecutar contratos inteligentes
 -   Tipos de cuentas:
-    -   **Top Level Accounts:** Cuentas principales o raíz en NEAR `minombre.near` para asignarlos a tu cuenta `0x13a...`
+    -   **Top Level Accounts:** Cuentas principales o raíz en NEAR `minombre.near` o `0x13a...` ligados a tu llave privada por medio de un contrato (uno solo por cuenta)
+        -   Permite el uso de separadores `. - _`
+        -   Debe tener de 2 a 64 caracteres
+        -   No puede tener 2 separadores continuos ni comenzar con un separador
+        -   Las cuentas solo pueden tener caracteres alfanuméricos
     -   **Sub Accounts:** Similar a los subdominios de sitios web. Permite desplegar contratos y manejar assets `contrato.minombre.near`
+        -   Solo se puede crear subdominios un nivel hacia arriba
+            -   `hola.soy.near` solo podría crear `hey.hola.soy.near`
     -   **Testnet Accounts:** Cuentas que corren en la red testnet de NEAR
 -   Wallets:
 
@@ -35,7 +91,7 @@
         |                       | Ethereum                                 | NEAR                                        |
         | --------------------- | ---------------------------------------- | ------------------------------------------- |
         | Identificador Público | _Public Key_ (0xa...)                    | Account ID (xxxx.near o 0xa...)             |
-        | Identificador Privado | _Private Key_ (0xa...)                   | Multiples _Kevpairs_ con permisos           |
+        | Identificador Privado | _Private Key_ (0xa...)                   | Multiples _Keypairs_ con permisos           |
         |                       |                                          | {Pub, Priv} -> Full Access Key              |
         |                       |                                          | {Pub, Priv} -> Contract Access Key          |
         | Características       | Con la _Private Key_ tienes acceso total | Accesos basados en los _keypairs_           |
@@ -71,13 +127,24 @@
 -   **DAOs:** Organizaciones Autónomas Descentralizadas que utilizan _blockchain_ y _smart contracts_ para la organización y distribución de riqueza de manera transparente, inmutable, autónoma y segura.
     -   Astro DAO y Sputnik DAO son las principales DAOs de NEAR
 
-## Sesión 3
+### Redes de NEAR
 
--   Redes de NEAR
-    -   Mainnet: Producción
-    -   Testnet: Pruebas previas a despliegue
-    -   Betanet: Red pública para pruebas del nearcore, se reinicia constantemente
-    -   Localnet: Dirigido a desarrolladores, tú generas los nodos (como EVM London de Solidity)
+    -   Mainnet:
+        -   Producción
+        -   Persistencia garantizada
+    -   Testnet:
+        -   Pruebas previas a despliegue
+        -   Emula el comportamiento de la mainnet
+        -   Selección predeterminada en `near-cli`
+    -   Betanet:
+        -   Red pública para pruebas del nearcore, se reinicia constantemente
+        -   Busca probar estabilidad y compatibilidad
+        -   Tiene funciones que aún no han sido estabilizadas
+        -   El estado no está garantizado
+    -   Localnet:
+        -   Dirigido a desarrolladores, tú generas los nodos (como EVM London de Remix)
+        -   Es local y te da control total sobre el comportamiento de la red
+
 -   Las redes se exploran en los exploradores de bloques de cada red
 -   Yocto es la unidad mínima de medida de un near (como un satoshi o un wei)
 
@@ -148,16 +215,6 @@
         ```
 
 ---
-
-### Proyecto Final: ¿Cómo implementarían la tecnología de NEAR en un proyecto?
-
--   Ideas:
-    -   Plataforma que mintea un NFT de cierto color de acuerdo al monto (oráculo)
-    -   Un contrato que cambie la metadata de la fuente
--   Hacer una presentación
-
-    -   Presentar como aplicaríamos el protocolo NEAR a nuestro proyecto en 5 slides
-    -   Demostrar que se ha entendido lo mostrado en el curso
 
 ## Documentación
 
